@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant123 - Plante Carnivore</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2d5a3d;
+            --light-green: #e8f5e9;
+            --accent-green: #4caf50;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 8px 32px rgba(31, 100, 50, 0.15);
+            --text-dark: #1b4332;
+            --text-light: #52796f;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #d4edda 0%, #c8e6c9 25%, #a5d6a7 50%, #81c784 75%, #66bb6a 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: -1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--primary-green);
+        }
+
+        .lang-toggle {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .lang-toggle:hover {
+            background: rgba(76, 175, 80, 0.3);
+            transform: scale(1.05);
+        }
+
+        .cart-btn {
+            position: relative;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cart-btn:hover {
+            background: rgba(76, 175, 80, 0.3);
+            transform: scale(1.05);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.75rem;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        /* Main Content */
+        main {
+            position: relative;
+            z-index: 1;
+            padding-top: 100px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-green);
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-badge {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--primary-green);
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* Shop Section */
+        .shop {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .shop-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .shop-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .shop-header p {
+            color: var(--text-light);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(31, 100, 50, 0.25);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-scientific {
+            font-style: italic;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .add-to-cart {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .add-to-cart:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .add-to-cart:active {
+            transform: scale(0.95);
+        }
+
+        /* Cart Sidebar */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            max-width: 100%;
+            height: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border-left: 1px solid var(--glass-border);
+            z-index: 2001;
+            transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .cart-sidebar.active {
+            right: 0;
+        }
+
+        .cart-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dark);
+            transition: transform 0.3s ease;
+        }
+
+        .close-cart:hover {
+            transform: rotate(90deg);
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .cart-item-price {
+            color: var(--primary-green);
+            font-weight: 700;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .qty-btn:hover {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .remove-item {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .remove-item:hover {
+            background: #c0392b;
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .cart-empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .cart-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .shipping-info {
+            text-align: center;
+            color: var(--accent-green);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 10px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .checkout-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Checkout Modal */
+        .checkout-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 1rem;
+        }
+
+        .checkout-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .checkout-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .checkout-modal.active .checkout-content {
+            transform: scale(1);
+        }
+
+        .checkout-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checkout-header h3 {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+        }
+
+        .close-checkout {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .checkout-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .fixed-field {
+            background: rgba(200, 230, 201, 0.5) !important;
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        .order-summary {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .order-summary h4 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .free-shipping {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .place-order-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .place-order-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success Modal */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 4000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .success-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .success-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .success-modal.active .success-content {
+            transform: scale(1);
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-content h3 {
+            color: var(--primary-green);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-content p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .success-btn {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .success-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        footer .logo {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                gap: 0.5rem;
+            }
+
+            .nav-links a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-sidebar {
+                width: 100%;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(76, 175, 80, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(76, 175, 80, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Particles -->
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Plant123</div>
+            <div class="nav-links">
+                <a href="#shop" data-ro="Magazin" data-en="Shop">Magazin</a>
+                <a href="care.html" data-ro="Îngrijire" data-en="Care">Îngrijire</a>
+                <button class="lang-toggle" onclick="toggleLanguage()">RO / EN</button>
+                <button class="cart-btn" onclick="toggleCart()">
+                    <span data-ro="Coș" data-en="Cart">Coș</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 data-ro="Plante Carnivore" data-en="Carnivorous Plants">Plante Carnivore</h1>
+            <p data-ro="Descoperă colecția noastră unică de plante carnivore. Livrare gratuită în Ploiești, Prahova!" data-en="Discover our unique collection of carnivorous plants. Free delivery in Ploiesti, Prahova!">
+                Descoperă colecția noastră unică de plante carnivore. Livrare gratuită în Ploiești, Prahova!
+            </p>
+            <div class="hero-badge" data-ro="🌿 Livrare Gratuită în Ploiești" data-en="🌿 Free Delivery in Ploiesti">
+                🌿 Livrare Gratuită în Ploiești
+            </div>
+        </section>
+
+        <!-- Shop Section -->
+        <section class="shop" id="shop">
+            <div class="shop-header">
+                <h2 data-ro="Magazinul Nostru" data-en="Our Shop">Magazinul Nostru</h2>
+                <p data-ro="Alege planta carnivoră perfectă pentru tine" data-en="Choose the perfect carnivorous plant for you">Alege planta carnivoră perfectă pentru tine</p>
+            </div>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded dynamically -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="logo">Plant123</div>
+        <p data-ro="© 2024 Plant123 - Toate drepturile rezervate" data-en="© 2024 Plant123 - All rights reserved">© 2024 Plant123 - Toate drepturile rezervate</p>
+        <p data-ro="Livrare doar în Ploiești, Prahova" data-en="Delivery only in Ploiesti, Prahova">Livrare doar în Ploiești, Prahova</p>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3 data-ro="Coșul Tău" data-en="Your Cart">Coșul Tău</h3>
+            <button class="close-cart" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <div class="cart-empty-icon">🛒</div>
+                <p data-ro="Coșul tău este gol" data-en="Your cart is empty">Coșul tău este gol</p>
+            </div>
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="shipping-info" data-ro="🚚 Livrare gratuită în Ploiești, Prahova" data-en="🚚 Free delivery in Ploiesti, Prahova">
+                🚚 Livrare gratuită în Ploiești, Prahova
+            </div>
+            <div class="cart-total">
+                <span data-ro="Total:" data-en="Total:">Total:</span>
+                <span id="cartTotal">0 RON</span>
+            </div>
+            <button class="checkout-btn" onclick="openCheckout()" data-ro="Finalizează Comanda" data-en="Checkout">
+                Finalizează Comanda
+            </button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="checkout-content">
+            <div class="checkout-header">
+                <h3 data-ro="Finalizează Comanda" data-en="Checkout">Finalizează Comanda</h3>
+                <button class="close-checkout" onclick="closeCheckout()">×</button>
+            </div>
+            <div class="checkout-body">
+                <div class="order-summary">
+                    <h4 data-ro="Rezumat Comandă" data-en="Order Summary">Rezumat Comandă</h4>
+                    <div id="orderSummaryItems"></div>
+                    <div class="summary-total">
+                        <span data-ro="Total" data-en="Total">Total</span>
+                        <span id="orderTotal">0 RON</span>
+                    </div>
+                    <div class="summary-item free-shipping" data-ro="Livrare: Gratuită" data-en="Shipping: Free">
+                        Livrare: Gratuită
+                    </div>
+                </div>
+
+                <form id="checkoutForm" onsubmit="placeOrder(event)">
+                    <div class="form-group">
+                        <label for="fullName" data-ro="Nume Complet *" data-en="Full Name *">Nume Complet *</label>
+                        <input type="text" id="fullName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" data-ro="Email *" data-en="Email *">Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" data-ro="Telefon *" data-en="Phone *">Telefon *</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="state" data-ro="Județ" data-en="State">Județ</label>
+                            <input type="text" id="state" value="Prahova" class="fixed-field" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="city" data-ro="Oraș" data-en="City">Oraș</label>
+                            <input type="text" id="city" value="Ploiești" class="fixed-field" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address" data-ro="Adresă Completă *" data-en="Full Address *">Adresă Completă *</label>
+                        <textarea id="address" rows="3" required placeholder="Stradă, număr, bloc, apartament..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes" data-ro="Observații (opțional)" data-en="Notes (optional)">Observații (opțional)</label>
+                        <textarea id="notes" rows="2"></textarea>
+                    </div>
+
+                    <button type="submit" class="place-order-btn" id="placeOrderBtn" data-ro="Plasează Comanda" data-en="Place Order">
+                        Plasează Comanda
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">✅</div>
+            <h3 data-ro="Comandă Plasată cu Succes!" data-en="Order Placed Successfully!">Comandă Plasată cu Succes!</h3>
+            <p data-ro="Vei primi un email cu detaliile comenzii tale. Îți mulțumim!" data-en="You will receive an email with your order details. Thank you!">
+                Vei primi un email cu detaliile comenzii tale. Îți mulțumim!
+            </p>
+            <button class="success-btn" onclick="closeSuccessModal()" data-ro="Închide" data-en="Close">Închide</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize EmailJS with your public key
+        // Replace 'YOUR_PUBLIC_KEY' with your actual EmailJS public key
+        emailjs.init("YOUR_PUBLIC_KEY");
+
+        // Language state
+        let currentLang = 'ro';
+
+        // Products data
+        const products = [
+            {
+                id: 1,
+                name: { ro: "Capcana Muștelor", en: "Venus Flytrap" },
+                scientific: "Dionaea muscipula",
+                description: { 
+                    ro: "Cea mai faimoasă plantă carnivoră cu capcane care se închid instant.", 
+                    en: "The most famous carnivorous plant with instantly closing traps." 
+                },
+                price: 45
+            },
+            {
+                id: 2,
+                name: { ro: "Plantă Cană", en: "Pitcher Plant" },
+                scientific: "Nepenthes",
+                description: { 
+                    ro: "Plantă tropicală cu căni elegante care atrag insecte.", 
+                    en: "Tropical plant with elegant pitchers that attract insects." 
+                },
+                price: 65
+            },
+            {
+                id: 3,
+                name: { ro: "Roua Cerului", en: "Sundew" },
+                scientific: "Drosera",
+                description: { 
+                    ro: "Plantă cu tentacule lipicioase care strălucesc la soare.", 
+                    en: "Plant with sticky tentacles that sparkle in the sun." 
+                },
+                price: 35
+            },
+            {
+                id: 4,
+                name: { ro: "Untul Lupului", en: "Butterwort" },
+                scientific: "Pinguicula",
+                description: { 
+                    ro: "Frunze lipicioase și flori delicate violet.", 
+                    en: "Sticky leaves and delicate purple flowers." 
+                },
+                price: 40
+            },
+            {
+                id: 5,
+                name: { ro: "Liliacul Cobra", en: "Cobra Lily" },
+                scientific: "Darlingtonia californica",
+                description: { 
+                    ro: "Formă unică de cap de cobra, plantă exotică.", 
+                    en: "Unique cobra head shape, exotic plant." 
+                },
+                price: 85
+            },
+            {
+                id: 6,
+                name: { ro: "Utricularia", en: "Bladderwort" },
+                scientific: "Utricularia",
+                description: { 
+                    ro: "Plantă acvatică cu capcane microscopice și flori galbene.", 
+                    en: "Aquatic plant with microscopic traps and yellow flowers." 
+                },
+                price: 55
+            }
+        ];
+
+        // Cart state
+        let cart = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            renderProducts();
+            loadCart();
+        });
+
+        // Create background particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Toggle language
+        function toggleLanguage() {
+            currentLang = currentLang === 'ro' ? 'en' : 'ro';
+            document.documentElement.lang = currentLang;
+            
+            // Update all elements with data-ro and data-en attributes
+            document.querySelectorAll('[data-ro][data-en]').forEach(el => {
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    if (el.hasAttribute('placeholder')) {
+                        el.placeholder = el.getAttribute(`data-${currentLang}`);
+                    }
+                } else {
+                    el.textContent = el.getAttribute(`data-${currentLang}`);
+                }
+            });
+
+            // Re-render products
+            renderProducts();
+            
+            // Update cart if open
+            renderCart();
+        }
+
+        // Render products
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = products.map(product => {
+                const imagePath = `images/${product.id}.png`;
+                const placeholder = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Crect fill='%23e8f5e9' width='280' height='280'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Playfair Display' font-size='40' fill='%232d5a3d'%3EPlant123%3C/text%3E%3C/svg%3E`;
+                
+                return `
+                    <div class="product-card">
+                        <img src="${imagePath}" 
+                             alt="${product.name[currentLang]}" 
+                             class="product-image"
+                             onerror="this.src='${placeholder}'">
+                        <div class="product-info">
+                            <h3 class="product-name">${product.name[currentLang]}</h3>
+                            <p class="product-scientific">${product.scientific}</p>
+                            <p class="product-description">${product.description[currentLang]}</p>
+                            <div class="product-footer">
+                                <span class="product-price">${product.price} RON</span>
+                                <button class="add-to-cart" onclick="addToCart(${product.id})">
+                                    ${currentLang === 'ro' ? 'Adaugă în Coș' : 'Add to Cart'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Add to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1
+                });
+            }
+
+            saveCart();
+            renderCart();
+            updateCartCount();
+            
+            // Open cart sidebar
+            document.getElementById('cartSidebar').classList.add('active');
+            document.getElementById('cartOverlay').classList.add('active');
+        }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCart();
+            renderCart();
+            updateCartCount();
+        }
+
+        // Update quantity
+        function updateQuantity(productId, delta) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    saveCart();
+                    renderCart();
+                    updateCartCount();
+                }
+            }
+        }
+
+        // Render cart
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartFooter = document.getElementById('cartFooter');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="cart-empty">
+                        <div class="cart-empty-icon">🛒</div>
+                        <p>${currentLang === 'ro' ? 'Coșul tău este gol' : 'Your cart is empty'}</p>
+                    </div>
+                `;
+                cartFooter.style.display = 'none';
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <img src="images/${item.id}.png" 
+                             alt="${item.name[currentLang]}" 
+                             class="cart-item-image"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\'%3E%3Crect fill=\'%23e8f5e9\' width=\'80\' height=\'80\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'Playfair Display\' font-size=\'16\' fill=\'%232d5a3d\'%3EP123%3C/text%3E%3C/svg%3E'">
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name[currentLang]}</div>
+                            <div class="cart-item-price">${item.price} RON</div>
+                            <div class="cart-item-quantity">
+                                <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                                <span>${item.quantity}</span>
+                                <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                                <button class="remove-item" onclick="removeFromCart(${item.id})">
+                                    ${currentLang === 'ro' ? 'Șterge' : 'Remove'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                cartFooter.style.display = 'block';
+            }
+
+            // Update total
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            document.getElementById('cartTotal').textContent = total + ' RON';
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        // Toggle cart
+        function toggleCart() {
+            document.getElementById('cartSidebar').classList.toggle('active');
+            document.getElementById('cartOverlay').classList.toggle('active');
+        }
+
+        // Open checkout
+        function openCheckout() {
+            if (cart.length === 0) return;
+            
+            toggleCart();
+            
+            // Render order summary
+            const summaryItems = document.getElementById('orderSummaryItems');
+            summaryItems.innerHTML = cart.map(item => `
+                <div class="summary-item">
+                    <span>${item.name[currentLang]} x${item.quantity}</span>
+                    <span>${item.price * item.quantity} RON</span>
+                </div>
+            `).join('');
+            
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            document.getElementById('orderTotal').textContent = total + ' RON';
+            
+            document.getElementById('checkoutModal').classList.add('active');
+        }
+
+        // Close checkout
+        function closeCheckout() {
+            document.getElementById('checkoutModal').classList.remove('active');
+        }
+
+        // Place order
+        async function placeOrder(event) {
+            event.preventDefault();
+            
+            const btn = document.getElementById('placeOrderBtn');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span>';
+
+            const orderData = {
+                customer_name: document.getElementById('fullName').value,
+                customer_email: document.getElementById('email').value,
+                customer_phone: document.getElementById('phone').value,
+                state: document.getElementById('state').value,
+                city: document.getElementById('city').value,
+                address: document.getElementById('address').value,
+                notes: document.getElementById('notes').value,
+                items: cart.map(item => ({
+                    name: item.name[currentLang],
+                    quantity: item.quantity,
+                    price: item.price,
+                    total: item.price * item.quantity
+                })),
+                total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+            };
+
+            try {
+                // Send email using EmailJS
+                // Replace 'YOUR_SERVICE_ID' and 'YOUR_TEMPLATE_ID' with your actual EmailJS credentials
+                await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+                    to_email: orderData.customer_email,
+                    customer_name: orderData.customer_name,
+                    customer_phone: orderData.customer_phone,
+                    customer_address: `${orderData.address}, ${orderData.city}, ${orderData.state}`,
+                    order_items: orderData.items.map(item => 
+                        `${item.name} x${item.quantity} - ${item.total} RON`
+                    ).join('\n'),
+                    order_total: orderData.total + ' RON',
+                    customer_notes: orderData.notes || 'Niciuna'
+                });
+
+                // Clear cart
+                cart = [];
+                saveCart();
+                updateCartCount();
+                
+                // Close checkout and show success
+                closeCheckout();
+                document.getElementById('successModal').classList.add('active');
+                
+                // Reset form
+                document.getElementById('checkoutForm').reset();
+            } catch (error) {
+                console.error('Error sending email:', error);
+                alert(currentLang === 'ro' 
+                    ? 'A apărut o eroare. Vă rugăm încercați din nou.' 
+                    : 'An error occurred. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        // Close success modal
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // Save cart to localStorage
+        function saveCart() {
+            localStorage.setItem('plant123_cart', JSON.stringify(cart));
+        }
+
+        // Load cart from localStorage
+        function loadCart() {
+            const saved = localStorage.getItem('plant123_cart');
+            if (saved) {
+                cart = JSON.parse(saved);
+                renderCart();
+                updateCartCount();
+            }
+        }
+
+        // Close modals on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('cartSidebar').classList.remove('active');
+                document.getElementById('cartOverlay').classList.remove('active');
+                document.getElementById('checkoutModal').classList.remove('active');
+                document.getElementById('successModal').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

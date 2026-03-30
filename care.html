@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant123 - Îngrijire Plante</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2d5a3d;
+            --light-green: #e8f5e9;
+            --accent-green: #4caf50;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 8px 32px rgba(31, 100, 50, 0.15);
+            --text-dark: #1b4332;
+            --text-light: #52796f;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #d4edda 0%, #c8e6c9 25%, #a5d6a7 50%, #81c784 75%, #66bb6a 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: -1px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--primary-green);
+        }
+
+        .lang-toggle {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .lang-toggle:hover {
+            background: rgba(76, 175, 80, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Main Content */
+        main {
+            position: relative;
+            z-index: 1;
+            padding-top: 100px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-green);
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 700px;
+        }
+
+        /* Care Sections */
+        .care-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .care-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--glass-shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .care-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .care-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .care-section h2 .icon {
+            font-size: 2.5rem;
+        }
+
+        .care-section p {
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .care-tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .tip-card {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .tip-card:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(1.02);
+        }
+
+        .tip-card h4 {
+            color: var(--primary-green);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tip-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        /* Plant Specific Care */
+        .plant-care-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .plant-care-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.4s ease;
+        }
+
+        .plant-care-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(31, 100, 50, 0.25);
+        }
+
+        .plant-care-header {
+            background: linear-gradient(135deg, rgba(45, 90, 61, 0.9) 0%, rgba(76, 175, 80, 0.9) 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .plant-care-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .plant-care-header .scientific {
+            font-style: italic;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .plant-care-body {
+            padding: 1.5rem;
+        }
+
+        .care-detail {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .care-detail:last-child {
+            margin-bottom: 0;
+        }
+
+        .care-detail .icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .care-detail h5 {
+            color: var(--primary-green);
+            margin-bottom: 0.25rem;
+        }
+
+        .care-detail p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* FAQ Section */
+        .faq-item {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .faq-question {
+            padding: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--accent-green);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer p {
+            padding: 0 1.25rem 1.25rem;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-light);
+            margin-top: 3rem;
+        }
+
+        footer .logo {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                gap: 0.5rem;
+            }
+
+            .nav-links a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            .care-section {
+                padding: 1.5rem;
+            }
+
+            .care-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .plant-care-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(76, 175, 80, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(76, 175, 80, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Particles -->
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Plant123</a>
+            <div class="nav-links">
+                <a href="index.html#shop" data-ro="Magazin" data-en="Shop">Magazin</a>
+                <a href="care.html" data-ro="Îngrijire" data-en="Care">Îngrijire</a>
+                <button class="lang-toggle" onclick="toggleLanguage()">RO / EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 data-ro="Ghid de Îngrijire" data-en="Care Guide">Ghid de Îngrijire</h1>
+            <p data-ro="Învață cum să îți îngrijești plantele carnivore pentru a prospera. Urmează aceste sfaturi simple!" data-en="Learn how to care for your carnivorous plants to thrive. Follow these simple tips!">
+                Învață cum să îți îngrijești plantele carnivore pentru a prospera. Urmează aceste sfaturi simple!
+            </p>
+        </section>
+
+        <!-- General Care Section -->
+        <div class="care-container">
+            <section class="care-section">
+                <h2><span class="icon">🌱</span> <span data-ro="Îngrijire Generală" data-en="General Care">Îngrijire Generală</span></h2>
+                <p data-ro="Plantele carnivore au nevoi specifice, dar odată ce înțelegi bazele, sunt relativ ușor de îngrijit. Iată cele mai importante aspecte de care trebuie să ții cont:" 
+                   data-en="Carnivorous plants have specific needs, but once you understand the basics, they are relatively easy to care for. Here are the most important aspects to consider:">
+                    Plantele carnivore au nevoi specifice, dar odată ce înțelegi bazele, sunt relativ ușor de îngrijit. Iată cele mai importante aspecte de care trebuie să ții cont:
+                </p>
+                
+                <div class="care-tips">
+                    <div class="tip-card">
+                        <h4>💧 <span data-ro="Apă" data-en="Water">Apă</span></h4>
+                        <p data-ro="Folosește apă distilată, de ploaie sau osmoză inversă. Apa de la robinet conține minerale care pot dăuna plantelor." 
+                           data-en="Use distilled, rainwater, or reverse osmosis water. Tap water contains minerals that can harm plants.">
+                            Folosește apă distilată, de ploaie sau osmoză inversă. Apa de la robinet conține minerale care pot dăuna plantelor.
+                        </p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>☀️ <span data-ro="Lumină" data-en="Light">Lumină</span></h4>
+                        <p data-ro="Majoritatea plantelor carnivore preferă lumină directă sau indirectă puternică. Minimum 4-6 ore de soi pe zi." 
+                           data-en="Most carnivorous plants prefer direct or strong indirect light. Minimum 4-6 hours of sun per day.">
+                            Majoritatea plantelor carnivore preferă lumină directă sau indirectă puternică. Minimum 4-6 ore de soi pe zi.
+                        </p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>🌡️ <span data-ro="Temperatură" data-en="Temperature">Temperatură</span></h4>
+                        <p data-ro="Temperatura optimă este între 15-27°C. Evită temperaturile extreme și curenții de aer rece." 
+                           data-en="Optimal temperature is between 15-27°C. Avoid extreme temperatures and cold drafts.">
+                            Temperatura optimă este între 15-27°C. Evită temperaturile extreme și curenții de aer rece.
+                        </p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>🏺 <span data-ro="Sol" data-en="Soil">Sol</span></h4>
+                        <p data-ro="Folosește un amestec de mușchi Sphagnum și nisip de cuarț sau perlite. Nu folosi pământ obișnuit!" 
+                           data-en="Use a mix of Sphagnum moss and quartz sand or perlite. Do not use regular soil!">
+                            Folosește un amestec de mușchi Sphagnum și nisip de cuarț sau perlite. Nu folosi pământ obișnuit!
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Specific Plant Care -->
+            <section class="care-section">
+                <h2><span class="icon">🌿</span> <span data-ro="Îngrijire Specifice" data-en="Specific Care">Îngrijire Specifice</span></h2>
+                <p data-ro="Fiecare tip de plantă carnivoră are particularitățile sale. Iată ghidul detaliat pentru fiecare:" 
+                   data-en="Each type of carnivorous plant has its particularities. Here is the detailed guide for each:">
+                    Fiecare tip de plantă carnivoră are particularitățile sale. Iată ghidul detaliat pentru fiecare:
+                </p>
+
+                <div class="plant-care-grid">
+                    <!-- Venus Flytrap -->
+                    <div class="plant-care-card">
+                        <div class="plant-care-header">
+                            <h3 data-ro="Capcana Muștelor" data-en="Venus Flytrap">Capcana Muștelor</h3>
+                            <span class="scientific">Dionaea muscipula</span>
+                        </div>
+                        <div class="plant-care-body">
+                            <div class="care-detail">
+                                <span class="icon">💧</span>
+                                <div>
+                                    <h5 data-ro="Umiditate" data-en="Humidity">Umiditate</h5>
+                                    <p data-ro="Menține solul permanent umed, dar nu înmuiat." data-en="Keep soil constantly moist, but not soaked.">Menține solul permanent umed, dar nu înmuiat.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">☀️</span>
+                                <div>
+                                    <h5 data-ro="Lumină" data-en="Light">Lumină</h5>
+                                    <p data-ro="Lumină directă 6+ ore pe zi." data-en="Direct light 6+ hours per day.">Lumină directă 6+ ore pe zi.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">🍽️</span>
+                                <div>
+                                    <h5 data-ro="Hrană" data-en="Food">Hrană</h5>
+                                    <p data-ro="O muscă sau o insectă mică pe lună este suficientă." data-en="One fly or small insect per month is enough.">O muscă sau o insectă mică pe lună este suficientă.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">⚠️</span>
+                                <div>
+                                    <h5 data-ro="Atenție" data-en="Warning">Atenție</h5>
+                                    <p data-ro="Nu declanșa capcanele manual - consumă energia plantei." data-en="Do not trigger traps manually - it consumes plant energy.">Nu declanșa capcanele manual - consumă energia plantei.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pitcher Plant -->
+                    <div class="plant-care-card">
+                        <div class="plant-care-header">
+                            <h3 data-ro="Plantă Cană" data-en="Pitcher Plant">Plantă Cană</h3>
+                            <span class="scientific">Nepenthes</span>
+                        </div>
+                        <div class="plant-care-body">
+                            <div class="care-detail">
+                                <span class="icon">💧</span>
+                                <div>
+                                    <h5 data-ro="Umiditate" data-en="Humidity">Umiditate</h5>
+                                    <p data-ro="Umiditate ridicată, 60-80%. Pulverizează zilnic." data-en="High humidity, 60-80%. Mist daily.">Umiditate ridicată, 60-80%. Pulverizează zilnic.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">☀️</span>
+                                <div>
+                                    <h5 data-ro="Lumină" data-en="Light">Lumină</h5>
+                                    <p data-ro="Lumină indirectă puternică sau filtrată." data-en="Strong indirect or filtered light.">Lumină indirectă puternică sau filtrată.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">🌡️</span>
+                                <div>
+                                    <h5 data-ro="Temperatură" data-en="Temperature">Temperatură</h5>
+                                    <p data-ro="18-27°C, evită temperaturi sub 15°C." data-en="18-27°C, avoid temperatures below 15°C.">18-27°C, evită temperaturi sub 15°C.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">🏺</span>
+                                <div>
+                                    <h5 data-ro="Ghiveci" data-en="Pot">Ghiveci</h5>
+                                    <p data-ro="Preferă ghivece suspendate pentru a permite căderii cănilor." data-en="Prefers hanging pots to allow pitchers to hang.">Preferă ghivece suspendate pentru a permite căderii cănilor.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sundew -->
+                    <div class="plant-care-card">
+                        <div class="plant-care-header">
+                            <h3 data-ro="Roua Cerului" data-en="Sundew">Roua Cerului</h3>
+                            <span class="scientific">Drosera</span>
+                        </div>
+                        <div class="plant-care-body">
+                            <div class="care-detail">
+                                <span class="icon">💧</span>
+                                <div>
+                                    <h5 data-ro="Umiditate" data-en="Humidity">Umiditate</h5>
+                                    <p data-ro="Sol umed constant, metoda tăviței cu apă funcționează bine." data-en="Constantly moist soil, tray method works well.">Sol umed constant, metoda tăviței cu apă funcționează bine.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">☀️</span>
+                                <div>
+                                    <h5 data-ro="Lumină" data-en="Light">Lumină</h5>
+                                    <p data-ro="Lumină directă cât mai mult posibil." data-en="Direct light as much as possible.">Lumină directă cât mai mult posibil.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">✨</span>
+                                <div>
+                                    <h5 data-ro="Rouă" data-en="Dew">Rouă</h5>
+                                    <p data-ro="Tentaculele trebuie să fie mereu lucioase. Dacă se usucă, crește umiditatea." data-en="Tentacles should always be shiny. If dry, increase humidity.">Tentaculele trebuie să fie mereu lucioase. Dacă se usucă, crește umiditatea.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">🍽️</span>
+                                <div>
+                                    <h5 data-ro="Hrană" data-en="Food">Hrană</h5>
+                                    <p data-ro="Poți hrăni cu insecte mici sau fulgi de cereale o dată pe lună." data-en="You can feed small insects or cereal flakes once a month.">Poți hrăni cu insecte mici sau fulgi de cereale o dată pe lună.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Butterwort -->
+                    <div class="plant-care-card">
+                        <div class="plant-care-header">
+                            <h3 data-ro="Untul Lupului" data-en="Butterwort">Untul Lupului</h3>
+                            <span class="scientific">Pinguicula</span>
+                        </div>
+                        <div class="plant-care-body">
+                            <div class="care-detail">
+                                <span class="icon">💧</span>
+                                <div>
+                                    <h5 data-ro="Umiditate" data-en="Humidity">Umiditate</h5>
+                                    <p data-ro="Sol ușor umed, nu exagera cu apa." data-en="Slightly moist soil, do not overwater.">Sol ușor umed, nu exagera cu apa.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">☀️</span>
+                                <div>
+                                    <h5 data-ro="Lumină" data-en="Light">Lumină</h5>
+                                    <p data-ro="Lumină indirectă puternică sau parțial soare direct." data-en="Strong indirect light or partial direct sun.">Lumină indirectă puternică sau parțial soare direct.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">🌸</span>
+                                <div>
+                                    <h5 data-ro="Înflorire" data-en="Flowering">Înflorire</h5>
+                                    <p data-ro="Produc flori violet frumoase primăvara." data-en="Produce beautiful purple flowers in spring.">Produc flori violet frumoase primăvara.</p>
+                                </div>
+                            </div>
+                            <div class="care-detail">
+                                <span class="icon">🔄</span>
+                                <div>
+                                    <h5 data-ro="Sezon" data-en="Season">Sezon</h5>
+                                    <p data-ro="Iarna intră în repaus - reduce apa considerabil." data-en="Goes dormant in winter - reduce water considerably.">Iarna intră în repaus - reduce apa considerabil.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section class="care-section">
+                <h2><span class="icon">❓</span> <span data-ro="Întrebări Frecvente" data-en="Frequently Asked Questions">Întrebări Frecvente</span></h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span data-ro="De ce plantele mele carnivore nu prind insecte?" data-en="Why aren't my carnivorous plants catching insects?">De ce plantele mele carnivore nu prind insecte?</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p data-ro="Plantele carnivore nu au nevoie obligatoriu de insecte pentru a supraviețui, dar ajută la creștere. Asigură-te că au suficientă lumină și umiditate. Poți hrăni manual cu insecte mici o dată pe lună." 
+                           data-en="Carnivorous plants don't necessarily need insects to survive, but it helps with growth. Make sure they have enough light and humidity. You can feed manually with small insects once a month.">
+                            Plantele carnivore nu au nevoie obligatoriu de insecte pentru a supraviețui, dar ajută la creștere. Asigură-te că au suficientă lumină și umiditate. Poți hrăni manual cu insecte mici o dată pe lună.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span data-ro="Pot folosi apă de la robinet?" data-en="Can I use tap water?">Pot folosi apă de la robinet?</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p data-ro="Nu este recomandat. Apa de la robinet conține minerale și clor care pot dăuna plantelor în timp. Folosește apă distilată, de ploaie sau osmoză inversă." 
+                           data-en="Not recommended. Tap water contains minerals and chlorine that can harm plants over time. Use distilled, rainwater, or reverse osmosis water.">
+                            Nu este recomandat. Apa de la robinet conține minerale și clor care pot dăuna plantelor în timp. Folosește apă distilată, de ploaie sau osmoză inversă.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span data-ro="Cât de des trebuie să ud plantele?" data-en="How often should I water the plants?">Cât de des trebuie să ud plantele?</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p data-ro="Depinde de specie și condiții, dar în general solul trebuie menținut umed constant. Metoda tăviței cu apă funcționează bine - pune ghiveciul într-o tăviță cu 2-3 cm apă și reumple când se golește." 
+                           data-en="Depends on species and conditions, but generally soil should be kept constantly moist. The tray method works well - place the pot in a tray with 2-3 cm of water and refill when empty.">
+                            Depinde de specie și condiții, dar în general solul trebuie menținut umed constant. Metoda tăviței cu apă funcționează bine - pune ghiveciul într-o tăviță cu 2-3 cm apă și reumple când se golește.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span data-ro="De ce capcanele plantei mele Venus Flytrap devin negre?" data-en="Why are my Venus Flytrap traps turning black?">De ce capcanele plantei mele Venus Flytrap devin negre?</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p data-ro="Capcanele negre sunt normale - fiecare capcană are o viață limitată (2-3 luni) și va muri după câteva prinderi. Dacă multe capcane devin negre simultan, poate fi din cauza apei nepotrivite, lipsei de lumină sau stresului." 
+                           data-en="Black traps are normal - each trap has a limited lifespan (2-3 months) and will die after a few catches. If many traps turn black simultaneously, it may be due to unsuitable water, lack of light, or stress.">
+                            Capcanele negre sunt normale - fiecare capcană are o viață limitată (2-3 luni) și va muri după câteva prinderi. Dacă multe capcane devin negre simultan, poate fi din cauza apei nepotrivite, lipsei de lumină sau stresului.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span data-ro="Pot ține plantele carnivore în casă?" data-en="Can I keep carnivorous plants indoors?">Pot ține plantele carnivore în casă?</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p data-ro="Da, dar asigură-te că au suficientă lumină (lângă o fereastră sudică sau sub lampă LED de creștere). Umiditatea poate fi crescută cu un umidificator sau plasând ghivecele pe o tavă cu pietre și apă." 
+                           data-en="Yes, but make sure they have enough light (near a south-facing window or under LED grow light). Humidity can be increased with a humidifier or by placing pots on a tray with pebbles and water.">
+                            Da, dar asigură-te că au suficientă lumină (lângă o fereastră sudică sau sub lampă LED de creștere). Umiditatea poate fi crescută cu un umidificator sau plasând ghivecele pe o tavă cu pietre și apă.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span data-ro="Când trebuie să repot plantele?" data-en="When should I repot the plants?">Când trebuie să repot plantele?</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p data-ro="De obicei o dată pe an, primăvara, înainte de începerea sezonului de creștere. Folosește mereu sol special pentru plante carnivore, niciodată pământ de grădină obișnuit." 
+                           data-en="Usually once a year, in spring, before the growing season starts. Always use special carnivorous plant soil, never regular garden soil.">
+                            De obicei o dată pe an, primăvara, înainte de începerea sezonului de creștere. Folosește mereu sol special pentru plante carnivore, niciodată pământ de grădină obișnuit.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tips Section -->
+            <section class="care-section">
+                <h2><span class="icon">💡</span> <span data-ro="Sfaturi Utile" data-en="Useful Tips">Sfaturi Utile</span></h2>
+                <div class="care-tips">
+                    <div class="tip-card">
+                        <h4>🚫 <span data-ro="Nu hrăni cu carne!" data-en="Don't feed with meat!">Nu hrăni cu carne!</span></h4>
+                        <p data-ro="Plantele carnivore digeră doar insecte vii sau proaspăt moarte. Carnea procesată le va putrezi." 
+                           data-en="Carnivorous plants only digest live or freshly dead insects. Processed meat will rot them.">
+                            Plantele carnivore digeră doar insecte vii sau proaspăt moarte. Carnea procesată le va putrezi.
+                        </p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>✂️ <span data-ro="Curățare" data-en="Cleaning">Curățare</span></h4>
+                        <p data-ro="Îndepărtează frunzele uscate sau negre pentru a încuraja creșterea nouă." 
+                           data-en="Remove dry or black leaves to encourage new growth.">
+                            Îndepărtează frunzele uscate sau negre pentru a încuraja creșterea nouă.
+                        </p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>🌱 <span data-ro="Înmulțire" data-en="Propagation">Înmulțire</span></h4>
+                        <p data-ro="Multe plante carnivore pot fi înmulțite prin divizare sau din semințe. Cercetează metoda specifică pentru specia ta." 
+                           data-en="Many carnivorous plants can be propagated by division or from seeds. Research the specific method for your species.">
+                            Multe plante carnivore pot fi înmulțite prin divizare sau din semințe. Cercetează metoda specifică pentru specia ta.
+                        </p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>❄️ <span data-ro="Iarna" data-en="Winter">Iarna</span></h4>
+                        <p data-ro="Majoritatea plantelor carnivore intră în repaus iarna. Reduce apa și menține-le într-un loc răcoros." 
+                           data-en="Most carnivorous plants go dormant in winter. Reduce water and keep them in a cool place.">
+                            Majoritatea plantelor carnivore intră în repaus iarna. Reduce apa și menține-le într-un loc răcoros.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <a href="index.html" class="logo">Plant123</a>
+        <p data-ro="© 2024 Plant123 - Toate drepturile rezervate" data-en="© 2024 Plant123 - All rights reserved">© 2024 Plant123 - Toate drepturile rezervate</p>
+        <p data-ro="Livrare doar în Ploiești, Prahova" data-en="Delivery only in Ploiesti, Prahova">Livrare doar în Ploiești, Prahova</p>
+    </footer>
+
+    <script>
+        // Language state
+        let currentLang = 'ro';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+        });
+
+        // Create background particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Toggle language
+        function toggleLanguage() {
+            currentLang = currentLang === 'ro' ? 'en' : 'ro';
+            document.documentElement.lang = currentLang;
+            
+            // Update all elements with data-ro and data-en attributes
+            document.querySelectorAll('[data-ro][data-en]').forEach(el => {
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    if (el.hasAttribute('placeholder')) {
+                        el.placeholder = el.getAttribute(`data-${currentLang}`);
+                    }
+                } else {
+                    el.textContent = el.getAttribute(`data-${currentLang}`);
+                }
+            });
+        }
+
+        // Toggle FAQ
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            faqItem.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
